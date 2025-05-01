@@ -8,4 +8,4 @@ RoltonVenv - подсистема для Windows, своеобразная ОС 
 
 <h2>благодарности</h2>
 
-@zeroqxq - указание на проблемный код (0xc0000001 NOT-SAFETY CALCULATING)
+@zeroqxq - указание на проблемный код (0xc0000001 NOT-SAFETY CALCULATE)
