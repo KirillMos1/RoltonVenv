@@ -36,7 +36,7 @@ def runner(cmd, workdir, userdir, username):
                     flag = False
                     for entry in data_fld:
                         if entry.is_dir() and entry.name == cmd[1]:
-                            module = os.path.join(modules_dir, entry.name, "main.exe")
+                            module = os.path.join(modules_dir, entry.name) + "main.exe"
                             flag = True
                             os.system("cls")
                             try: subprocess.call([f"{module}"])
@@ -48,7 +48,7 @@ def runner(cmd, workdir, userdir, username):
                     if flag:
                         pass
                     else:
-                        print("MODULE_UWNKOWN_ERROR (0x00000041): неизвестная утилита")
+                        print("MODULE_UWNKOWN_ERROR (0x00000041): неизвестная модуль. Скачайте его с помощью rolton-venv-get")
             else:
                 print("MODULE_NEED_ARGUMENT_ERROR (0x00000033): ожидалось 2 аргумента")
         else:
