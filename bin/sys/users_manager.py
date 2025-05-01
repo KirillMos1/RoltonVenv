@@ -1,6 +1,6 @@
 import os, sqlite3
 print(os.getcwd())
-db = sqlite3.connect(os.getcwd() + "\\bin\\sys\\data\\users.db" if os.name == "nt" else "/bin/sys/data/users.db")
+db = sqlite3.connect(os.path.join(os.getcwd(), "bin", "sys", "data") + "users.db")
 cursor = db.cursor()
 
 def registr(name, passwd, workdir):
