@@ -1,4 +1,4 @@
-import os
+import os, subprocess
 from ..utils.calc import calculate
 
 def runner(cmd, workdir, userdir, username):
@@ -29,6 +29,28 @@ def runner(cmd, workdir, userdir, username):
                     print("UTIL_UWNKOWN_ERROR (0x00000031): неизвестная утилита")
             else:
                 print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+        elif cmd[0] == "module-run":
+            if len(cmd) == 2:
+                modules_dir = os.path.join(os.getcwd(), "modules")
+                with os.scandir(modules_dir) as data_fld:
+                    flag = False
+                    for entry in data_fld:
+                        if entry.is_dir() and entry.name == cmd[1]:
+                            module = os.path.join(modules_dir, entry.name, "main.exe")
+                            flag = True
+                            os.system("cls")
+                            try: subprocess.call([f"{module}"])
+                            except:
+                                print("MODULE_CORRUPTED_ERROR (0x00000043): модуль поврежден. Переустановите его!")
+                            os.system("cls")
+                        else:
+                            continue
+                    if flag:
+                        pass
+                    else:
+                        print("MODULE_UWNKOWN_ERROR (0x00000041): неизвестная утилита")
+            else:
+                print("MODULE_NEED_ARGUMENT_ERROR (0x00000033): ожидалось 2 аргумента")
         else:
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
     else:
