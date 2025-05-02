@@ -6,7 +6,7 @@ def runner(cmd, workdir, userdir, username):
     if cmd:
         if cmd[0] == "help":
             if len(cmd) == 1:
-                print("help - это сообщение")
+                print("help - это сообщение\nmodule-run <модуль> - запуск модуля\nutil-run <утилита> <параметр> - запуск утилиты\ndir - отображение текущей папки")
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
         elif cmd[0] == "exit":
@@ -40,9 +40,10 @@ def runner(cmd, workdir, userdir, username):
                             flag = True
                             os.system("cls")
                             try: subprocess.call([f"{module}"])
-                            except:
+                            except Exception as e:
                                 print("MODULE_CORRUPTED_ERROR (0x00000043): модуль поврежден. Переустановите его!")
-                            os.system("cls")
+                                print(f"BUILTIN_ERROR: {e}")
+                            else: os.system("cls")
                         else:
                             continue
                     if flag:
