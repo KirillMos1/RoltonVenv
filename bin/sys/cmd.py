@@ -20,7 +20,7 @@ def runner(cmd, workdir, userdir, username):
                 for filer in os.listdir(workdir):
                     print(f"|-- {filer}")
             except Exception as e:
-                print(e)
+                print(f"BUILTIN_ERROR: {e}")
         elif cmd[0] == "util-run":
             if len(cmd) > 2:
                 if cmd[1] == "calc":
