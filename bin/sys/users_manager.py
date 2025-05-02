@@ -1,5 +1,4 @@
 import os, sqlite3
-print(os.getcwd())
 db = sqlite3.connect(os.path.join(os.getcwd(), "bin", "sys", "data") + "users.db")
 cursor = db.cursor()
 
@@ -31,7 +30,6 @@ workdir TEXT NOT NULL UNIQUE
     db.commit()
     cursor.execute("SELECT name, passwd FROM users")
     res = cursor.fetchall()
-    print(res)
     if not res:
         return 0
     else:
