@@ -9,3 +9,7 @@ RoltonVenv - подсистема для Windows, своеобразная ОС 
 <h2>благодарности</h2>
 
 @zeroqxq - указание на проблемный код (0xc0000001 NOT-SAFETY CALCULATE)
+
+<h2>ВНИМАНИЕ!</h2>
+
+Идея проекта была взята у <a href = "https://github.com/PulsarPrograms/PulsarVenv">PulsarVenv</a>
