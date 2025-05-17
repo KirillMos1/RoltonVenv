@@ -1,5 +1,6 @@
 import os, subprocess
 from ..utils.calc import calculate
+from ..utils.color_checker import checker_color
 
 def runner(cmd, workdir, userdir, username):
     cmd = cmd.split()
@@ -25,6 +26,8 @@ def runner(cmd, workdir, userdir, username):
             if len(cmd) > 2:
                 if cmd[1] == "calc":
                     print(calculate(cmd[2]))
+                elif cmd[1] == "color-checker":
+                    checker_color()
                 else:
                     print("UTIL_UWNKOWN_ERROR (0x00000031): неизвестная утилита")
             else:
