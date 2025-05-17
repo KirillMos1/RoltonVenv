@@ -42,7 +42,7 @@ def runner(cmd, workdir, userdir, username):
                             module = os.path.join(modules_dir, entry.name) + "main.exe"
                             flag = True
                             os.system("cls")
-                            try: subprocess.call([f"{module}"])
+                            try: subprocess.call([f"{module}", username])
                             except Exception as e:
                                 print("MODULE_CORRUPTED_ERROR (0x00000043): модуль поврежден. Переустановите его!")
                                 print(f"BUILTIN_ERROR: {e}")

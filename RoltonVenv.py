@@ -17,8 +17,9 @@ def loginning(users: dict):
         exit(0x00000012)
     try:
         os.listdir(workdir)
-    except:
+    except Exception as e:
         print("FILE_SYSTEM_CORRUPTED_ERROR (0x00000013): Файловая система повреждена! Переустановите RoltonVenv")
+        print(f"BUILTIN_ERROR: {e}")
         input("Нажмите ENTER для выхода...")
         exit(0x00000013)
     passwd_check = getpass.getpass("Пароль: ")
@@ -58,7 +59,7 @@ def registrate():
 def run():
     command = ""
     while command != "exit":
-        command = input(f"{work_directory[len(os.getcwd()):]}>>")
+        command = input(f"{work_directory[len(os.getcwd()):]}>> ")
         bin.sys.cmd.runner(command, work_directory, user_home, user_name)
 
 users = bin.sys.users_manager.checker()
