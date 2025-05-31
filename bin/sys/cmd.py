@@ -56,8 +56,17 @@ def runner(cmd, workdir, userdir, username):
             else:
                 print("MODULE_NEED_ARGUMENT_ERROR (0x00000033): ожидалось 2 аргумента")
         elif cmd[0] == "cd":
+            # заглушка
             folders = cmd[1].split("/")
             print(folders)
+        elif cmd[0] == "new":
+            if len(cmd) in (1, 2,):
+                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+            else:
+                if cmd[1] == "file":
+                    open(os.path.join(workdir, cmd[2]), "x").close()
+                else:
+                    print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
         else:
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
     else:
