@@ -55,6 +55,9 @@ def runner(cmd, workdir, userdir, username):
                         print("MODULE_UWNKOWN_ERROR (0x00000041): неизвестная модуль. Скачайте его с помощью rolton-venv-get")
             else:
                 print("MODULE_NEED_ARGUMENT_ERROR (0x00000033): ожидалось 2 аргумента")
+        elif cmd[0] == "cd":
+            folders = cmd[1].split("/")
+            print(folders)
         else:
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
     else:

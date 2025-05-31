@@ -1,5 +1,5 @@
 import os, sqlite3
-db = sqlite3.connect(os.path.join(os.getcwd(), "bin", "sys", "data") + "users.db")
+db = sqlite3.connect(os.path.join(os.getcwd(), "bin", "sys", "data", "users.db"))
 cursor = db.cursor()
 
 def registr(name, passwd, workdir, color_fg, color_bg):

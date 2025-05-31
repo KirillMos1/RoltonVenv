@@ -11,7 +11,10 @@ user_color_fg = ""
 def loginning(users: dict):
     global work_directory, user_home, user_name, user_passwd, user_id, user_color_bg, user_color_fg
     print("Вход в RoltonVenv")
-    name = input("Введите имя пользователя: ")
+    name = input("Введите имя пользователя (для регистрации нового введите CREATE): ")
+    if name == "CREATE":
+        print("\033[2J")
+        registrate()
     try: id_user, _, passwd, workdir, color_fg, color_bg = users[name]
     except KeyError:
         print("USER_NOT_EXISTS_ERROR (0x00000012): Пользователь не существует!")
@@ -46,8 +49,8 @@ def registrate():
         passwd = getpass.getpass("Пароль: ")
         passwd_check = getpass.getpass("Еще раз пароль: ")
     while True:
-    	color_fg = input("Введите цвет фона (используйте таблицу:\n30 - черный\n31 - красный\n32 - зеленый\n33 - желтый\n34 - синий\n35 - марганец\n36 - циановый\n37 - белый)\nЦвет фона: ")
-        try:
+        color_fg = input("Введите цвет фона (используйте таблицу:\n30 - черный\n31 - красный\n32 - зеленый\n33 - желтый\n34 - синий\n35 - марганец\n36 - циановый\n37 - белый)\nЦвет фона: ")
+        try: 
             color_fg_int = int(color_fg)
         except ValueError:
             print("Значение не числовое!")
@@ -58,7 +61,7 @@ def registrate():
                 continue
             else: break
     while True:
-    	color_bg = input("Введите цвет текста (используйте таблицу:\n40 - черный\n41 - красный\n42 - зеленый\n44 - желтый\n44 - синий\n45 - марганец\n46 - циановый\n47 - белый)\nЦвет текста: ")
+        color_bg = input("Введите цвет текста (используйте таблицу:\n40 - черный\n41 - красный\n42 - зеленый\n44 - желтый\n44 - синий\n45 - марганец\n46 - циановый\n47 - белый)\nЦвет текста: ")
         try:
             color_bg_int = int(color_bg)
         except ValueError:
