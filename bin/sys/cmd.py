@@ -2,9 +2,10 @@ import os, subprocess, datetime
 from ..utils.calc import calculate
 from ..utils.color_checker import checker_color
 
-logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "a")
+logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "a+")
 
 def runner(cmd, workdir, userdir, username):
+    global logger
     cmd = cmd.split()
     
     if cmd:
@@ -135,6 +136,33 @@ def runner(cmd, workdir, userdir, username):
                 logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
                 logger.flush()
                 
+        elif cmd[0] == "settings":
+            if len(cmd) >= 3:
+                if cmd[1] == "log":
+                    if cmd[2] == "get":
+                        print(logger.read())
+                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                        logger.flush()
+                    elif cmd[2] == "clear":
+                        logger.close()
+                        logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "w")
+                        logger.write()
+                        logger.flush()
+                        logger.close()
+                        logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "a+")
+                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                    else:
+                        print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[2]}'")
+                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                        logger.flush()
+                else:
+                    print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                    logger.flush()
+            else:
+                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                logger.flush()
         else:
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
             logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000021\n")
