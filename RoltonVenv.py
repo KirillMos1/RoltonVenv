@@ -120,6 +120,11 @@ def run():
 
 logger.write(f"[{datetime.datetime.now()}] Init functions succsesful\n")
 logger.flush()
+theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "r")
+theme_selected = open(os.path.join(os.getcwd(), "bin", "sys", "data", "logo", f"{theme.read()[:-1]}.txt"), "r")
+print(theme_selected.read())
+theme.close()
+theme_selected.close()
 users = bin.sys.users_manager.checker()
 if users == 0:
     registrate()

@@ -155,6 +155,40 @@ def runner(cmd, workdir, userdir, username):
                         print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[2]}'")
                         logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
                         logger.flush()
+                elif cmd[1] == "system":
+                    if len(cmd) > 5:
+                        if cmd[2] == "welcome-text":
+                            if cmd[3] == "style":
+                                if cmd[4] == "get":
+                                    theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "r")
+                                    print(f"Выбранная тема: {theme.read()[:1]}")
+                                    theme.close()
+                                elif cmd[4] == "set":
+                                    if cmd[5] in ("standart", "doom", "money"):
+                                        theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "w")
+                                        theme.write(cmd[5])
+                                        theme.flush()
+                                        theme.close()
+                                    else:
+                                        print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[5]}'")
+                                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                        logger.flush()
+                                else:
+                                    print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[4]}'")
+                                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                    logger.flush()
+                            else:
+                                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[3]}'")
+                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                logger.flush()
+                        else:
+                            print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[2]}'")
+                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                            logger.flush()
+                    else:
+                        print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                        logger.flush()
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
                     logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
