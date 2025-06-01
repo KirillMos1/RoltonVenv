@@ -1,37 +1,74 @@
-import os, subprocess
+import os, subprocess, datetime
 from ..utils.calc import calculate
 from ..utils.color_checker import checker_color
 
+logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "a")
+
 def runner(cmd, workdir, userdir, username):
     cmd = cmd.split()
+    
     if cmd:
+        logger.write(f"[{datetime.datetime.now()}] Execute '{cmd[0]}'\n")
+        logger.flush()
         if cmd[0] == "help":
             if len(cmd) == 1:
                 print("help - это сообщение\nmodule-run <модуль> - запуск модуля\nutil-run <утилита> <параметр> - запуск утилиты\ndir - отображение текущей папки")
+                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.flush()
+                
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.flush()
+                
         elif cmd[0] == "exit":
             if len(cmd) == 1:
+                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.flush()
+                logger.close()
                 return
+                
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.flush()
+                
         elif cmd[0] == "dir":
             try:
                 print(f"| [{workdir}]")
                 for filer in os.listdir(workdir):
                     print(f"|-- {filer}")
+                    
             except Exception as e:
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                logger.flush()
                 print(f"BUILTIN_ERROR: {e}")
+            else:
+                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.flush()
+                
         elif cmd[0] == "util-run":
             if len(cmd) > 2:
                 if cmd[1] == "calc":
                     print(calculate(cmd[2]))
+                    logger.write(f"[{datetime.datetime.now()}] Succesful execute utilite '{cmd[1]}'\n")
+                    logger.flush()
+                    
                 elif cmd[1] == "color-checker":
                     checker_color()
+                    logger.write(f"[{datetime.datetime.now()}] Succesful execute utilite '{cmd[1]}'\n")
+                    logger.flush()
+                    
                 else:
                     print("UTIL_UWNKOWN_ERROR (0x00000031): неизвестная утилита")
+                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000031\n")
+                    logger.flush()
+                    
             else:
                 print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                logger.flush()
+                
         elif cmd[0] == "module-run":
             if len(cmd) == 2:
                 modules_dir = os.path.join(os.getcwd(), "modules")
@@ -46,35 +83,62 @@ def runner(cmd, workdir, userdir, username):
                             except Exception as e:
                                 print("MODULE_CORRUPTED_ERROR (0x00000043): модуль поврежден. Переустановите его!")
                                 print(f"BUILTIN_ERROR: {e}")
-                            else: os.system("cls")
+                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000043 (BUILTIN_ERROR: {e})\n")
+                                logger.flush()
+                            else:
+                                os.system("cls")
+                                logger.write(f"[{datetime.datetime.now()}] Succesful execute module '{cmd[1]}'\n")
                         else:
                             continue
                     if flag:
                         pass
+                        
                     else:
                         print("MODULE_UWNKOWN_ERROR (0x00000041): неизвестная модуль. Скачайте его с помощью rolton-venv-get")
+                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000041\n")
+                        logger.flush()
+                        
             else:
-                print("MODULE_NEED_ARGUMENT_ERROR (0x00000033): ожидалось 2 аргумента")
+                print("MODULE_NEED_ARGUMENT_ERROR (0x00000042): ожидалось 2 аргумента")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000042\n")
+                logger.flush()
+                
         elif cmd[0] == "cd":
             # заглушка
             folders = cmd[1].split("/")
             print(folders)
+            logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+            
         elif cmd[0] == "new":
             if len(cmd) in (1, 2,):
                 print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                logger.flush()
             else:
                 if cmd[1] == "file":
                     open(os.path.join(workdir, cmd[2]), "x").close()
+                    logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                    logger.flush()
+                    
         elif cmd[0] == "version":
             if len(cmd) == 1:
                 vers_file = open(os.path.join(os.getcwd(), "bin", "sys", "data", "version.txt"), "r")
                 print(f"Версия RoltonVenv: {vers_file.read()}")
                 vers_file.close()
+                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.flush()
+                
         else:
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
+            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000021\n")
+            logger.flush()
+            
     else:
         return
