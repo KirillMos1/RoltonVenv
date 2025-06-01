@@ -67,6 +67,13 @@ def runner(cmd, workdir, userdir, username):
                     open(os.path.join(workdir, cmd[2]), "x").close()
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+        elif cmd[0] == "version":
+            if len(cmd) == 1:
+                vers_file = open(os.path.join(os.getcwd(), "bin", "sys", "data", "version.txt"), "r")
+                print(f"Версия RoltonVenv: {vers_file.read()}")
+                vers_file.close()
+            else:
+                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
         else:
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
     else:
