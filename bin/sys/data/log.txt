@@ -2,3 +2,43 @@
 [2025-06-02 19:08:10.919850] Init functions succsesful
 [2025-06-02 19:08:11.051904] Registration
 [2025-06-02 19:08:32.066990] RoltonVenv crashed with code 0x00000011
+[2025-06-02 19:09:33.853243] Init functions
+[2025-06-02 19:09:33.853312] Init functions succsesful
+[2025-06-02 19:09:33.979660] Registration
+[2025-06-02 19:09:44.877163] Run shell
+[2025-06-02 19:10:29.752211] Execute 'new'
+[2025-06-02 19:10:29.752552] Succesful execute 'new'
+[2025-06-02 19:10:32.030484] Execute 'dir'
+[2025-06-02 19:10:32.030768] Succesful execute 'dir'
+[2025-06-02 19:10:39.808680] Execute 'cd'
+[2025-06-02 19:10:39.808776] Succesful execute 'cd'
+[2025-06-02 19:10:59.343348] Execute 'settings'
+[2025-06-02 19:10:59.343533] Failed execute 'settings' code 0x00000033
+[2025-06-02 19:11:14.661575] Execute 'settings'
+[2025-06-02 19:11:14.661767] Failed execute 'settings' code 0x00000033
+[2025-06-02 19:11:22.581146] Execute 'OAOBOBODOC'
+[2025-06-02 19:11:22.581369] Failed execute 'OAOBOBODOC' code 0x00000021
+[2025-06-02 19:12:04.886356] Execute 'exit'
+[2025-06-02 19:12:04.886537] Succesful execute 'exit'
+[2025-06-02 19:12:04.886626] RoltonVenv exit
+[2025-06-02 19:12:30.935556] Init functions
+[2025-06-02 19:12:30.935623] Init functions succsesful
+[2025-06-02 19:12:33.867195] Loginning
+[2025-06-02 19:12:35.264271] Run shell
+[2025-06-02 19:12:59.102233] Execute 'settings'
+[2025-06-02 19:12:59.102475] Failed execute 'settings' code 0x00000022
+[2025-06-02 19:13:36.904970] Execute 'exit'
+[2025-06-02 19:13:36.905113] Succesful execute 'exit'
+[2025-06-02 19:13:36.905183] RoltonVenv exit
+[2025-06-02 19:13:40.466927] Init functions
+[2025-06-02 19:13:40.466997] Init functions succsesful
+[2025-06-02 19:13:42.445960] Loginning
+[2025-06-02 19:13:43.605121] Run shell
+[2025-06-02 19:14:05.503033] Execute 'settings'
+[2025-06-02 19:14:07.655426] Execute 'exit'
+[2025-06-02 19:14:07.655514] Succesful execute 'exit'
+[2025-06-02 19:14:07.655558] RoltonVenv exit
+[2025-06-02 19:14:09.167108] Init functions
+[2025-06-02 19:14:09.167184] Init functions succsesful
+[2025-06-02 19:14:40.926705] Init functions
+[2025-06-02 19:14:40.926773] Init functions succsesful
