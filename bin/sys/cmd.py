@@ -109,6 +109,7 @@ def runner(cmd, workdir, userdir, username):
             folders = cmd[1].split("/")
             print(folders)
             logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+            logger.flush()
             
         elif cmd[0] == "new":
             if len(cmd) in (1, 2,):
@@ -119,6 +120,16 @@ def runner(cmd, workdir, userdir, username):
                 if cmd[1] == "file":
                     open(os.path.join(workdir, cmd[2]), "x").close()
                     logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                    logger.flush()
+                elif cmd[1] == "dir":
+                    try: os.mkdir(cmd[2])
+                    except Exception as e:
+                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                        logger.flush()
+                        print(f"BUILTIN_ERROR: {e}")
+                    else:
+                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                        logger.flush()
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
                     logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
@@ -130,6 +141,7 @@ def runner(cmd, workdir, userdir, username):
                 print(f"Версия RoltonVenv: {vers_file.read()}")
                 vers_file.close()
                 logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.flush()
                 
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
@@ -201,6 +213,9 @@ def runner(cmd, workdir, userdir, username):
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
             logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000021\n")
             logger.flush()
-            
+    elif cmd[0] == "echo":
+        for string in cmd[1:]: print(string, end = " ")
+        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+        logger.flush()
     else:
         return
