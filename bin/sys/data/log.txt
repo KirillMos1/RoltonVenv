@@ -1,0 +1,4 @@
+[2025-06-02 19:08:10.919737] Init functions
+[2025-06-02 19:08:10.919850] Init functions succsesful
+[2025-06-02 19:08:11.051904] Registration
+[2025-06-02 19:08:32.066990] RoltonVenv crashed with code 0x00000011
