@@ -217,5 +217,27 @@ def runner(cmd, workdir, userdir, username):
         for string in cmd[1:]: print(string, end = " ")
         logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
         logger.flush()
+    elif cmd[0] == "run"
+        if len(cmd) == 1:
+            print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+            logger.flush()
+        else:
+            try: script_user = open(os.path.join(os.getcwd(), "scripts", f"{cmd[1]}.rvs"))
+            except FileNotExistsError:
+                print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
+                logger.flush()
+            except Exception as e:
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                logger.flush()
+                print(f"BUILTIN_ERROR: {e}")
+            else:
+                commands = script_user.read().split("\n")
+                commands = commads[:-1] if commands[-1] == "" else commands
+                for cmd in commands: runner(cmd, workdir, userdir, username)
+                script_user.close()
+                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.flush()
     else:
         return
