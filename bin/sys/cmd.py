@@ -217,7 +217,7 @@ def runner(cmd, workdir, userdir, username):
         for string in cmd[1:]: print(string, end = " ")
         logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
         logger.flush()
-    elif cmd[0] == "run"
+    elif cmd[0] == "run":
         if len(cmd) == 1:
             print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
             logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
