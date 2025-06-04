@@ -239,5 +239,26 @@ def runner(cmd, workdir, userdir, username):
                 script_user.close()
                 logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
+    elif cmd[0] == "view":
+        if len(cmd) == 2:
+            try: 
+                file_opened = open(os.path.join(workdir, cmd[1]), "r")
+            except FileNotFoundError:
+                print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
+                logger.flush()
+            except Exception as e:
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                logger.flush()
+                print(f"BUILTIN_ERROR: {e}")
+            else:
+                print(file_opened.read())
+                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.flush()
+                file_opened.close()
+        else:
+            print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+            logger.flush()
     else:
         return
