@@ -13,7 +13,7 @@ def runner(cmd, workdir, userdir, username):
         logger.flush()
         if cmd[0] == "help":
             if len(cmd) == 1:
-                print("help - это сообщение\nmodule-run <модуль> - запуск модуля\nutil-run <утилита> <параметр> - запуск утилиты\ndir - отображение текущей папки")
+                print("help - это сообщение\nmodule-run - запуск модуля\nutil-run - запуск утилиты\ndir - отображение текущей папки\nnew - создать файл/директорию\nsettings - изменить настройки\necho - отобразить текст\nversion - вывести версию\nrun - запустить скрипт\nview - просмотреть содержимое файла")
                 logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
                 
