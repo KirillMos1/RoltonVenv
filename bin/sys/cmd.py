@@ -260,5 +260,14 @@ def runner(cmd, workdir, userdir, username):
             print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
             logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
             logger.flush()
+    elif cmd[0] == "sponsors":
+        if len(cmd) == 1:
+            print("Спонсоры:\nPulsarVenv - похожий на наш проект (ТГ: @pulsarvenv)")
+        else:
+            print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+            logger.flush()
+    elif cmd[0].startswith("#"):
+        print("", end = "")
     else:
         return

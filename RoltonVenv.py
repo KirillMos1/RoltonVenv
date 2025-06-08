@@ -109,7 +109,8 @@ def registrate():
 
 def run():
     print(f"\033[{user_color_fg};{user_color_bg}m")
-    print("\033[2J")
+    os.system("cls" if os.name == "nt" else "clear")
+    bin.sys.cmd.runner(f"run {"RoltonVenv-start.rvs"}")
     command = ""
     while command != "exit":
         command = input(f"{work_directory[len(os.getcwd()):]}>> ")
