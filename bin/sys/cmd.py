@@ -4,7 +4,7 @@ from ..utils.color_checker import checker_color
 
 logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "a+")
 
-def runner(cmd, workdir, userdir, username):
+def runner(cmd, workdir, userdir, username, root = 0):
     global logger
     cmd = cmd.split()
     
@@ -36,6 +36,8 @@ def runner(cmd, workdir, userdir, username):
                     print(" - 0x00000043 - модуль поврежден (также является типом ошибки для всех встроеенных ошибок)")
                     print("\nКласс ошибок 0x0000005x - ошибки файловой системы")
                     print(" - 0x00000051 - файл не найден")
+                    print("\nКласс ошибок 0x0000006x - ошибки прав доступа")
+                    print(" - 0x00000061 - нету прав на выполнение команды")
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
                     logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
@@ -194,14 +196,19 @@ def runner(cmd, workdir, userdir, username):
                                     print(f"Выбранная тема: {theme.read()[:1]}")
                                     theme.close()
                                 elif cmd[4] == "set":
-                                    if cmd[5] in ("standart", "doom", "money"):
-                                        theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "w")
-                                        theme.write(cmd[5])
-                                        theme.flush()
-                                        theme.close()
+                                    if root:
+                                        if cmd[5] in ("standart", "doom", "money"):
+                                            theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "w")
+                                            theme.write(cmd[5])
+                                            theme.flush()
+                                            theme.close()
+                                        else:
+                                            print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[5]}'")
+                                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                            logger.flush()
                                     else:
-                                        print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[5]}'")
-                                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                        print("ACCESS_NOT_GRANTED_ERROR (0x00000061): вы не администратор")
+                                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000061\n")
                                         logger.flush()
                                 else:
                                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[4]}'")

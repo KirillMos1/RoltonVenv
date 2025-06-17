@@ -8,6 +8,7 @@ user_passwd = ""
 user_id = 0
 user_color_bg = ""
 user_color_fg = ""
+user_root = 0
 
 logger.write(f"[{datetime.datetime.now()}] Init functions\n")
 logger.flush()
@@ -51,11 +52,11 @@ def loginning(users: dict):
         user_color_fg = color_fg
         user_color_bg = color_bg
 
-def registrate():
+def registrate(root):
     logger.write(f"[{datetime.datetime.now()}] Registration\n")
     logger.flush()
-    global work_directory, user_home, user_name, user_passwd, user_id, user_color_fg, user_color_bg
-    print("Создание аккаунта Rolton Venv")
+    global work_directory, user_home, user_name, user_passwd, user_id, user_color_fg, user_color_bg, user_root
+    print(f"Создание аккаунта Rolton Venv {"(аккаунт будет создан с правами администратора)" if root else ""}")
     name = input("Ваше имя: ")
     passwd = getpass.getpass("Пароль: ")
     passwd_check = getpass.getpass("Еще раз пароль: ")
@@ -96,7 +97,7 @@ def registrate():
         logger.flush()
         logger.close()
         exit(0x00000011)
-    code, error, id_us = bin.sys.users_manager.registr(name, passwd, workdir, color_fg, color_bg)
+    code, error, id_us = bin.sys.users_manager.registr(name, passwd, workdir, color_fg, color_bg, root)
     if not code:
         print("Успешная регистрация!")
         user_id = id_us
@@ -106,6 +107,7 @@ def registrate():
         user_home = workdir
         user_color_bg = color_bg
         user_color_fg = color_fg
+        user_root = 1 if root else 0
 
 def run():
     print(f"\033[{user_color_fg};{user_color_bg}m")
@@ -114,7 +116,7 @@ def run():
     command = ""
     while command != "exit":
         command = input(f"{work_directory[len(os.getcwd()):]}>> ")
-        bin.sys.cmd.runner(command, work_directory, user_home, user_name)
+        bin.sys.cmd.runner(command, work_directory, user_home, user_name, user_root)
     logger.write(f"[{datetime.datetime.now()}] RoltonVenv exit\n")
     logger.flush()
     logger.close()
@@ -128,7 +130,7 @@ theme.close()
 theme_selected.close()
 users = bin.sys.users_manager.checker()
 if users == 0:
-    registrate()
+    registrate(1)
 else:
     loginning(users)
 
