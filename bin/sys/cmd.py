@@ -17,11 +17,29 @@ def runner(cmd, workdir, userdir, username):
                 logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
                 
-            else:
-                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
-                logger.flush()
-                
+            elif len(cmd) == 2:
+                if cmd[1] == "errors":
+                    print("=== ОШИБКИ ROLTONVENV ===\n")
+                    print("Класс ошибок 0x0000001x - ошибки в системе пользователей / фатальные ошибки")
+                    print(" - 0x00000011 - пользователь уже существует")
+                    print(" - 0x00000012 - пользователь не существует")
+                    print(" - 0x00000013 - файловая система повреждена (также является типом ошибки для всех встроеенных ошибок)") 
+                    print("\nКласс ошибок 0x0000002x - ошибки в командах")
+                    print(" - 0x00000021 - неизвестная команда")
+                    print(" - 0x00000022 - неизвестный аргумент функции")
+                    print(" - 0x00000023 - недостаточно аргументов")
+                    print("\nКласс ошибок 0x0000003x - ошибки в утилитах")
+                    print(" - 0x00000031 - неизвестная утилита")
+                    print("\nКласс ошибок 0x0000004x - ошибки в модулях")
+                    print(" - 0x00000041 - неизвестный модуль")
+                    print(" - 0x00000042 - отсутсвует название модуля")
+                    print(" - 0x00000043 - модуль поврежден (также является типом ошибки для всех встроеенных ошибок)")
+                    print("\nКласс ошибок 0x0000005x - ошибки файловой системы")
+                    print(" - 0x00000051 - файл не найден")
+                else:
+                    print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                    logger.flush()
         elif cmd[0] == "exit":
             if len(cmd) == 1:
                 logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
@@ -66,8 +84,8 @@ def runner(cmd, workdir, userdir, username):
                     logger.flush()
                     
             else:
-                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
                 
         elif cmd[0] == "module-run":
@@ -113,8 +131,8 @@ def runner(cmd, workdir, userdir, username):
             
         elif cmd[0] == "new":
             if len(cmd) in (1, 2,):
-                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
             else:
                 if cmd[1] == "file":
@@ -198,16 +216,16 @@ def runner(cmd, workdir, userdir, username):
                             logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
                             logger.flush()
                     else:
-                        print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
-                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                        print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
+                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                         logger.flush()
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
                     logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
                     logger.flush()
             else:
-                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
         elif cmd[0] == "echo":
             for string in cmd[1:]: print(string, end = " ")
@@ -215,8 +233,8 @@ def runner(cmd, workdir, userdir, username):
             logger.flush()
         elif cmd[0] == "run":
             if len(cmd) == 1:
-                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
             else:
                 try: script_user = open(os.path.join(os.getcwd(), "scripts", f"{cmd[1]}.rvs"))
@@ -253,8 +271,8 @@ def runner(cmd, workdir, userdir, username):
                     logger.flush()
                     file_opened.close()
             else:
-                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
         elif cmd[0] == "sponsors":
             if len(cmd) == 1:
