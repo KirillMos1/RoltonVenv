@@ -124,7 +124,7 @@ def run():
 logger.write(f"[{datetime.datetime.now()}] Init functions succsesful\n")
 logger.flush()
 theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "r")
-theme_selected = open(os.path.join(os.getcwd(), "bin", "sys", "data", "logo", f"{theme.readlines()[0]}.txt"), "r")
+theme_selected = open(os.path.join(os.getcwd(), "bin", "sys", "data", "logo", f"{theme.readline()}.txt"), "r")
 print(theme_selected.read())
 theme.close()
 theme_selected.close()
