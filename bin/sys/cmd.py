@@ -205,7 +205,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                                     if root:
                                         if cmd[5] in ("standart", "doom", "money"):
                                             theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "w")
-                                            theme.write(cmd[5])
+                                            theme.write(cmd[5] + "\n")
                                             theme.flush()
                                             theme.close()
                                         else:
