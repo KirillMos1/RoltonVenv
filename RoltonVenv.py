@@ -112,7 +112,7 @@ def registrate(root):
 def run():
     print(f"\033[{user_color_fg};{user_color_bg}m")
     os.system("cls" if os.name == "nt" else "clear")
-    bin.sys.cmd.runner(f"run {"RoltonVenv-start.rvs"}")
+    bin.sys.cmd.runner(f"run {"RoltonVenv-start.rvs"}", work_directory, user_home, user_name, user_root)
     command = ""
     while command != "exit":
         command = input(f"{work_directory[len(os.getcwd()):]}>> ")
