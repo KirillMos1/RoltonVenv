@@ -1,4 +1,4 @@
-import os, subprocess, datetime
+import os, subprocess, datetime, platform
 from ..utils.calc import calculate
 from ..utils.color_checker import checker_color
 
@@ -209,65 +209,79 @@ def runner(cmd, workdir, userdir, username):
                 print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
                 logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
                 logger.flush()
+        elif cmd[0] == "echo":
+            for string in cmd[1:]: print(string, end = " ")
+            logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+            logger.flush()
+        elif cmd[0] == "run":
+            if len(cmd) == 1:
+                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                logger.flush()
+            else:
+                try: script_user = open(os.path.join(os.getcwd(), "scripts", f"{cmd[1]}.rvs"))
+                except FileNotFoundError:
+                    print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
+                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
+                    logger.flush()
+                except Exception as e:
+                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                    logger.flush()
+                    print(f"BUILTIN_ERROR: {e}")
+                else:
+                    commands = script_user.read().split("\n")
+                    commands = commands[:-1] if commands[-1] == "" else commands
+                    for cmd in commands: runner(cmd, workdir, userdir, username)
+                    script_user.close()
+                    logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                    logger.flush()
+        elif cmd[0] == "view":
+            if len(cmd) == 2:
+                try: 
+                    file_opened = open(os.path.join(workdir, cmd[1]), "r")
+                except FileNotFoundError:
+                    print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
+                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
+                    logger.flush()
+                except Exception as e:
+                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                    logger.flush()
+                    print(f"BUILTIN_ERROR: {e}")
+                else:
+                    print(file_opened.read())
+                    logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                    logger.flush()
+                    file_opened.close()
+            else:
+                print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
+                logger.flush()
+        elif cmd[0] == "sponsors":
+            if len(cmd) == 1:
+                print("Спонсоры:\nPulsarVenv - похожий на наш проект (ТГ: @pulsarvenv)")
+            else:
+                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.flush()
+        elif cmd[0].startswith("#"):
+            print("", end = "")
+        elif cmd[0] == "fetch":
+            if len(cmd) == 1:
+                fetch_file = open(os.path.join(os.getcwd(), "bin", "sys", "data", "fetch.txt"), "r")
+                lines = fetch_file.readlines()
+                vers_file = open(os.path.join(os.getcwd(), "bin", "sys", "data", "version.txt"), "r")
+                print(f"{lines[0]}\n{lines[1]} Имя: RoltonVenv {vers_file.readlines()[0]} для {platform.system()}\n{lines[2]}\n{lines[3]} ОС: {platform.system()} {platform.release()}\n{lines[4]}\n{lines[5]} Версия: {vers_file.readlines()[0]}\n{lines[6]}\n{lines[7]} CPU: {platform.processor()}\n{lines[8]}\n{lines[9]} Пользователь: {username}\n{lines[10]}\n")
+                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.flush()
+                fetch_file.close()
+                vers_file.close()
+            else:
+                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.flush()
         else:
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
             logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000021\n")
             logger.flush()
-    elif cmd[0] == "echo":
-        for string in cmd[1:]: print(string, end = " ")
-        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
-        logger.flush()
-    elif cmd[0] == "run":
-        if len(cmd) == 1:
-            print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
-            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
-            logger.flush()
-        else:
-            try: script_user = open(os.path.join(os.getcwd(), "scripts", f"{cmd[1]}.rvs"))
-            except FileNotExistsError:
-                print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
-                logger.flush()
-            except Exception as e:
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
-                logger.flush()
-                print(f"BUILTIN_ERROR: {e}")
-            else:
-                commands = script_user.read().split("\n")
-                commands = commads[:-1] if commands[-1] == "" else commands
-                for cmd in commands: runner(cmd, workdir, userdir, username)
-                script_user.close()
-                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
-                logger.flush()
-    elif cmd[0] == "view":
-        if len(cmd) == 2:
-            try: 
-                file_opened = open(os.path.join(workdir, cmd[1]), "r")
-            except FileNotFoundError:
-                print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
-                logger.flush()
-            except Exception as e:
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
-                logger.flush()
-                print(f"BUILTIN_ERROR: {e}")
-            else:
-                print(file_opened.read())
-                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
-                logger.flush()
-                file_opened.close()
-        else:
-            print("UTIL_NEED_ARGUMENT_ERROR (0x00000033): недостаточно аргументов")
-            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000033\n")
-            logger.flush()
-    elif cmd[0] == "sponsors":
-        if len(cmd) == 1:
-            print("Спонсоры:\nPulsarVenv - похожий на наш проект (ТГ: @pulsarvenv)")
-        else:
-            print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
-            logger.flush()
-    elif cmd[0].startswith("#"):
-        print("", end = "")
     else:
         return
