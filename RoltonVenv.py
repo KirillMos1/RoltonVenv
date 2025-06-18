@@ -19,7 +19,7 @@ def loginning(users: dict):
     name = input("Введите имя пользователя (для регистрации нового введите CREATE): ")
     if name == "CREATE":
         print("\033[2J")
-        registrate()
+        registrate(0)
         return
     logger.write(f"[{datetime.datetime.now()}] Loginning\n")
     logger.flush()

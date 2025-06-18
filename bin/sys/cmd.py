@@ -251,7 +251,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                 logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
             else:
-                try: script_user = open(os.path.join(os.getcwd(), "scripts", f"{cmd[1]}.rvs"))
+                try: script_user = open(os.path.join(os.getcwd(), "scripts", f"{cmd[1]}"))
                 except FileNotFoundError:
                     print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
                     logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
