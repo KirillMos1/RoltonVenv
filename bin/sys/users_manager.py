@@ -32,7 +32,7 @@ root INTEGER NOT NULL
 )""")
     db.commit()
     cursor.execute("SELECT name, passwd FROM users")
-    res = cursor.fetchall()
+    res = cursor.fetchall() # структура: [("имя1", "пароль1"), ("имя2", "пароль2")] | res[0] = ("имя1", "пароль1")
     if not res:
         return 0
     else:

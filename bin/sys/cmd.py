@@ -1,6 +1,7 @@
 import os, subprocess, datetime, platform
 from ..utils.calc import calculate
 from ..utils.color_checker import checker_color
+from .users_manager import registr, user_data_get
 
 logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "a+")
 
@@ -117,7 +118,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                         pass
                         
                     else:
-                        print("MODULE_UWNKOWN_ERROR (0x00000041): неизвестная модуль. Скачайте его с помощью rolton-venv-get")
+                        print("MODULE_UWNKOWN_ERROR (0x00000041): неизвестный модуль. Скачайте его с помощью rolton-venv-get")
                         logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000041\n")
                         logger.flush()
                         
@@ -196,7 +197,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                         logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
                         logger.flush()
                 elif cmd[1] == "system":
-                    if len(cmd) > 5:
+                    if len(cmd) >= 4:
                         if cmd[2] == "welcome-text":
                             if cmd[3] == "style":
                                 if cmd[4] == "get":
@@ -205,15 +206,21 @@ def runner(cmd, workdir, userdir, username, root = 0):
                                     theme.close()
                                 elif cmd[4] == "set":
                                     if root:
-                                        if cmd[5] in ("standart", "doom", "money"):
-                                            theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "w")
-                                            theme.write(cmd[5] + "\n")
-                                            theme.flush()
-                                            theme.close()
-                                        else:
-                                            print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[5]}'")
-                                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                        try: test = cmd[5]
+                                        except KeyError:
+                                            print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
+                                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                                             logger.flush()
+                                        else:
+                                            if cmd[5] in ("standart", "doom", "money"):
+                                                theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "w")
+                                                theme.write(cmd[5] + "\n")
+                                                theme.flush()
+                                                theme.close()
+                                            else:
+                                                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[5]}'")
+                                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                                logger.flush()
                                     else:
                                         print("ACCESS_NOT_GRANTED_ERROR (0x00000061): вы не администратор")
                                         logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000061\n")
@@ -226,7 +233,58 @@ def runner(cmd, workdir, userdir, username, root = 0):
                                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[3]}'")
                                 logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
                                 logger.flush()
-                        else:
+                        elif cmd[2] == "users":
+                            if cmd[3] == "add":
+                                if root:
+                                    if len(cmd) > 6:
+                                        if cmd[6] in ("1", "0"):
+                                            workdir = os.path.join(os.getcwd(), "users", cmd[4])
+                                            try: os.mkdir(workdir)
+                                            except FileExistsError:
+                                                print(f"FILE_EXISTS_ERROR (0x00000011): пользователь '{cmd[4]}' уже существует")
+                                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000011\n")
+                                                logger.flush()
+                                            code, error, _ = registr(cmd[4], cmd[5], workdir, "40", "37", int(cmd[6]))
+                                            if code:
+                                                print(f"BUILTIN_ERROR: {error}")
+                                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' (BUILTIN_ERROR: '{error}')\n")
+                                                logger.flush()
+                                        else:
+                                            print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[6]}'")
+                                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                            logger.flush()
+                                    else:
+                                        print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
+                                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                                        logger.flush()
+                                else:
+                                    print("ACCESS_NOT_GRANTED_ERROR (0x00000061): вы не администратор")
+                                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000061\n")
+                                    logger.flush()
+                            elif cmd[3] == "view":
+                                if len(cmd) > 4:
+                                    if cmd[4] == "root":
+                                        data = user_data_get()
+                                        for name, values in data.items():
+                                            if values[6] == 1:
+                                                print(f"Пользователь {name}\n  - ID: {values[0]}\n  - Администратор: да\n  - Рабочая директория: {values[3]}\n")
+                                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                                        logger.flush()
+                                    elif cmd[4] == "all":
+                                        data = user_data_get()
+                                        for name, values in data.items():
+                                            print(f"Пользователь {name}\n  - ID: {values[0]}\n  - Администратор: {"да" if values[6] == 1 else "нет"}\n  - Рабочая директория: {values[3]}\n")
+                                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                                        logger.flush()
+                                    else:
+                                        print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[4]}'")
+                                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                        logger.flush()
+                            else:   
+                                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[3]}'")
+                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                logger.flush()
+                        else:   
                             print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[2]}'")
                             logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
                             logger.flush()
