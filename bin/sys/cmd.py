@@ -23,7 +23,8 @@ def runner(cmd, workdir, userdir, username, root = 0):
                     print("Класс ошибок 0x0000001x - ошибки в системе пользователей / фатальные ошибки")
                     print(" - 0x00000011 - пользователь уже существует")
                     print(" - 0x00000012 - пользователь не существует")
-                    print(" - 0x00000013 - файловая система повреждена (также является типом ошибки для всех встроеенных ошибок)") 
+                    print(" - 0x00000013 - файловая система повреждена (также является типом ошибки для всех встроеенных ошибок)")
+                    print(" - 0x00000014 - неизвестная ошибка")
                     print("\nКласс ошибок 0x0000002x - ошибки в командах")
                     print(" - 0x00000021 - неизвестная команда")
                     print(" - 0x00000022 - неизвестный аргумент функции")
@@ -264,6 +265,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                     commands = script_user.read().split("\n")
                     commands = commands[:-1] if commands[-1] == "" else commands
                     for cmd in commands: runner(cmd, workdir, userdir, username)
+                    print()
                     script_user.close()
                     logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
                     logger.flush()

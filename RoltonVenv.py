@@ -14,16 +14,16 @@ logger.write(f"[{datetime.datetime.now()}] Init functions\n")
 logger.flush()
 
 def loginning(users: dict):
-    global work_directory, user_home, user_name, user_passwd, user_id, user_color_bg, user_color_fg
+    global work_directory, user_home, user_name, user_passwd, user_id, user_color_bg, user_color_fg, user_root
     print("Вход в RoltonVenv")
     name = input("Введите имя пользователя (для регистрации нового введите CREATE): ")
     if name == "CREATE":
-        print("\033[2J")
+        os.system("cls" if os.name == "nt" else "clear")
         registrate(0)
         return
     logger.write(f"[{datetime.datetime.now()}] Loginning\n")
     logger.flush()
-    try: id_user, _, passwd, workdir, color_fg, color_bg = users[name]
+    try: id_user, _, passwd, workdir, color_fg, color_bg, root = users[name]
     except KeyError:
         print("USER_NOT_EXISTS_ERROR (0x00000012): Пользователь не существует!")
         input("Нажмите ENTER для выхода...")
@@ -51,6 +51,7 @@ def loginning(users: dict):
         user_home = workdir
         user_color_fg = color_fg
         user_color_bg = color_bg
+        user_root = 1 if root else 0
 
 def registrate(root):
     logger.write(f"[{datetime.datetime.now()}] Registration\n")
@@ -108,7 +109,13 @@ def registrate(root):
         user_color_bg = color_bg
         user_color_fg = color_fg
         user_root = 1 if root else 0
-
+    else:
+        print(f"Произошла ошибка при регистрации\nBUILTIN_ERROR: {error}")
+        logger.write(f"[{datetime.datetime.now()}] RoltonVenv crashed with code 0x00000014 (BUILTIN_ERROR '{error}')\n")
+        logger.flush()
+        input("Нажмите ENTER для выхода...")
+        logger.close()
+        exit(0x00000014)
 def run():
     print(f"\033[{user_color_fg};{user_color_bg}m")
     os.system("cls" if os.name == "nt" else "clear")

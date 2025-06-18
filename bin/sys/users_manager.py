@@ -3,7 +3,7 @@ db = sqlite3.connect(os.path.join(os.getcwd(), "bin", "sys", "data", "users.db")
 cursor = db.cursor()
 
 def registr(name, passwd, workdir, color_fg, color_bg, root):
-    try: cursor.execute("INSERT INTO users (name, passwd, workdir, color_fg, color_bg, root) VALUES (?, ?, ?, ?, ?)", (name, passwd, workdir, color_fg, color_bg, root))
+    try: cursor.execute("INSERT INTO users (name, passwd, workdir, color_fg, color_bg, root) VALUES (?, ?, ?, ?, ?, ?)", (name, passwd, workdir, color_fg, color_bg, root))
     except Exception as e: return (1, e, None)
     else:
         cursor.execute("SELECT id FROM users WHERE name = ?", (name,))
