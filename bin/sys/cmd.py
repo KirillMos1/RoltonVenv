@@ -14,7 +14,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
         logger.flush()
         if cmd[0] == "help":
             if len(cmd) == 1:
-                print("help - это сообщение\nmodule-run - запуск модуля\nutil-run - запуск утилиты\ndir - отображение текущей папки\nnew - создать файл/директорию\nsettings - изменить настройки\necho - отобразить текст\nversion - вывести версию\nrun - запустить скрипт\nview - просмотреть содержимое файла")
+                print("help - это сообщение\nmodule-run - запуск модуля\nutil-run - запуск утилиты\ndir - отображение текущей папки\nnew - создать файл/директорию\nsettings - изменить настройки\necho - отобразить текст\nversion - вывести версию\nrun - запустить скрипт\nview - просмотреть содержимое файла\nfetch - получить некоторые данные о системе и ОС\nwhoami - выводит информацию о пользователе")
                 logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
                 
@@ -300,10 +300,12 @@ def runner(cmd, workdir, userdir, username, root = 0):
                 print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
                 logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
+
         elif cmd[0] == "echo":
             for string in cmd[1:]: print(string, end = " ")
             logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
             logger.flush()
+
         elif cmd[0] == "run":
             if len(cmd) == 1:
                 print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
@@ -327,6 +329,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                     script_user.close()
                     logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
                     logger.flush()
+
         elif cmd[0] == "view":
             if len(cmd) == 2:
                 try: 
@@ -348,15 +351,10 @@ def runner(cmd, workdir, userdir, username, root = 0):
                 print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
                 logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
-        elif cmd[0] == "sponsors":
-            if len(cmd) == 1:
-                print("Спонсоры:\nPulsarVenv - похожий на наш проект (ТГ: @pulsarvenv)")
-            else:
-                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
-                logger.flush()
+
         elif cmd[0].startswith("#"):
             print("", end = "")
+
         elif cmd[0] == "fetch":
             if len(cmd) == 1:
                 fetch_file = open(os.path.join(os.getcwd(), "bin", "sys", "data", "fetch.txt"), "r")
@@ -367,6 +365,19 @@ def runner(cmd, workdir, userdir, username, root = 0):
                 logger.flush()
                 fetch_file.close()
                 vers_file.close()
+            else:
+                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.flush()
+
+        elif cmd[0] == "whoami":
+            if len(cmd) == 1:
+                data = user_data_get()
+                for name, values in data.items():
+                    if name == username:
+                        print(f"Пользователь {name}\n  - ID: {values[0]}\n  - Администратор: {"да" if root else "нет"}\n  - Рабочая директория: {values[3]}\n")
+                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.flush()
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
                 logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
