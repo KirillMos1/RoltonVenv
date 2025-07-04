@@ -3,19 +3,21 @@ from ..utils.calc import calculate
 from ..utils.color_checker import checker_color
 from .users_manager import registr, user_data_get
 
-logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "a+")
+logger_path = os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt")
+logger = open(os.path.join(logger_path, "a+")
 
-def runner(cmd, workdir, userdir, username, root = 0):
+
+def runner(cmd, workdir, userdir, username, root = 0, time_start: datetime.datetime = None):
     global logger
     cmd = cmd.split()
     
     if cmd:
-        logger.write(f"[{datetime.datetime.now()}] Execute '{cmd[0]}'\n")
+        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Execute '{cmd[0]}'\n")
         logger.flush()
         if cmd[0] == "help":
             if len(cmd) == 1:
                 print("help - это сообщение\nmodule-run - запуск модуля\nutil-run - запуск утилиты\ndir - отображение текущей папки\nnew - создать файл/директорию\nsettings - изменить настройки\necho - отобразить текст\nversion - вывести версию\nrun - запустить скрипт\nview - просмотреть содержимое файла\nfetch - получить некоторые данные о системе и ОС\nwhoami - выводит информацию о пользователе")
-                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
                 
             elif len(cmd) == 2:
@@ -43,18 +45,18 @@ def runner(cmd, workdir, userdir, username, root = 0):
                     print(" - 0x00000061 - нету прав на выполнение команды")
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                     logger.flush()
         elif cmd[0] == "exit":
             if len(cmd) == 1:
-                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
                 logger.close()
                 return
                 
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                 logger.flush()
                 
         elif cmd[0] == "dir":
@@ -64,33 +66,33 @@ def runner(cmd, workdir, userdir, username, root = 0):
                     print(f"|-- {filer}")
                     
             except Exception as e:
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
                 logger.flush()
                 print(f"BUILTIN_ERROR: {e}")
             else:
-                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
                 
         elif cmd[0] == "util-run":
             if len(cmd) > 2:
                 if cmd[1] == "calc":
                     print(calculate(cmd[2]))
-                    logger.write(f"[{datetime.datetime.now()}] Succesful execute utilite '{cmd[1]}'\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute utilite '{cmd[1]}'\n")
                     logger.flush()
                     
                 elif cmd[1] == "color-checker":
                     checker_color()
-                    logger.write(f"[{datetime.datetime.now()}] Succesful execute utilite '{cmd[1]}'\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute utilite '{cmd[1]}'\n")
                     logger.flush()
                     
                 else:
                     print("UTIL_UWNKOWN_ERROR (0x00000031): неизвестная утилита")
-                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000031\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000031\n")
                     logger.flush()
                     
             else:
                 print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
                 
         elif cmd[0] == "module-run":
@@ -100,18 +102,36 @@ def runner(cmd, workdir, userdir, username, root = 0):
                     flag = False
                     for entry in data_fld:
                         if entry.is_dir() and entry.name == cmd[1]:
-                            module = os.path.join(modules_dir, entry.name) + "main.exe"
+                            runner = open(os.path.join(modules_dir, entry.name, "runner.txt"), "r")
                             flag = True
                             os.system("cls")
-                            try: subprocess.call([f"{module}", username])
+                            try:
+                                if os.name == "nt":
+                                    subprocess.call([f"{os.path.join(modules_dir, entry.name, ".\main.exe")}", username, logger_path])
+                                else:
+                                    if runner.read() == "compiled":
+                                        subprocess.call(["{os.path.join(modules_dir, entry.name, "./module")}", username, logger_path])
+                                    elif runner.read() == "python":
+                                        subprocess.call(["{os.path.join(modules_dir, entry.name, "python3 module.py")}", username, logger_path])
+                                    elif runner.read() == "sh":
+                                        run_y_n = input("ВНИМАНИЕ!!\nЭтот модуль использует для запуска скрипт консоли. Разработчик RoltonVenv НЕ НЕСЕТ ОТВЕТСТВЕННОСТИ за Ваши действия и за действия модуля. Вы хотите его запустить? (да/нет): ")
+                                        if run_y_n.lower() == "да":
+                                            subprocess.call(["{os.path.join(modules_dir, entry.name, "./module.sh")}", username, logger_path])
+                                        else:
+                                            return
+                                    else:
+                                        print("MODULE_CORRUPTED_ERROR (0x00000043): модуль поврежден. Переустановите его!")
+                                        print(f"BUILTIN_ERROR: {e}")
+                                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000043 (BUILTIN_ERROR: {e})\n")
+                                        logger.flush()
                             except Exception as e:
                                 print("MODULE_CORRUPTED_ERROR (0x00000043): модуль поврежден. Переустановите его!")
                                 print(f"BUILTIN_ERROR: {e}")
-                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000043 (BUILTIN_ERROR: {e})\n")
+                                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000043 (BUILTIN_ERROR: {e})\n")
                                 logger.flush()
                             else:
                                 os.system("cls")
-                                logger.write(f"[{datetime.datetime.now()}] Succesful execute module '{cmd[1]}'\n")
+                                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute module '{cmd[1]}'\n")
                         else:
                             continue
                     if flag:
@@ -119,43 +139,43 @@ def runner(cmd, workdir, userdir, username, root = 0):
                         
                     else:
                         print("MODULE_UWNKOWN_ERROR (0x00000041): неизвестный модуль. Скачайте его с помощью rolton-venv-get")
-                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000041\n")
+                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000041\n")
                         logger.flush()
                         
             else:
                 print("MODULE_NEED_ARGUMENT_ERROR (0x00000042): ожидалось 2 аргумента")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000042\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000042\n")
                 logger.flush()
                 
         elif cmd[0] == "cd":
             # заглушка
             folders = cmd[1].split("/")
             print(folders)
-            logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+            logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
             logger.flush()
             
         elif cmd[0] == "new":
             if len(cmd) in (1, 2,):
                 print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
             else:
                 if cmd[1] == "file":
                     open(os.path.join(workdir, cmd[2]), "x").close()
-                    logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                     logger.flush()
                 elif cmd[1] == "dir":
                     try: os.mkdir(cmd[2])
                     except Exception as e:
-                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
                         logger.flush()
                         print(f"BUILTIN_ERROR: {e}")
                     else:
-                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                         logger.flush()
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                     logger.flush()
                     
         elif cmd[0] == "version":
@@ -163,12 +183,12 @@ def runner(cmd, workdir, userdir, username, root = 0):
                 vers_file = open(os.path.join(os.getcwd(), "bin", "sys", "data", "version.txt"), "r")
                 print(f"Версия RoltonVenv: {vers_file.read()}")
                 vers_file.close()
-                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
                 
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                 logger.flush()
                 
         elif cmd[0] == "settings":
@@ -176,7 +196,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                 if cmd[1] == "log":
                     if cmd[2] == "get":
                         print(logger.read())
-                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                         logger.flush()
                     elif cmd[2] == "clear":
                         if root:
@@ -186,15 +206,15 @@ def runner(cmd, workdir, userdir, username, root = 0):
                             logger.flush()
                             logger.close()
                             logger = open(os.path.join(os.getcwd(), "bin", "sys", "data", "log.txt"), "a+")
-                            logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                            logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                             logger.flush()
                         else:
                             print("ACCESS_NOT_GRANTED_ERROR (0x00000061): вы не администратор")
-                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000061\n")
+                            logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000061\n")
                             logger.flush()
                     else:
                         print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[2]}'")
-                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                         logger.flush()
                 elif cmd[1] == "system":
                     if len(cmd) >= 4:
@@ -209,7 +229,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                                         try: test = cmd[5]
                                         except KeyError:
                                             print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
-                                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                                            logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000023\n")
                                             logger.flush()
                                         else:
                                             if cmd[5] in ("standart", "doom", "money"):
@@ -219,19 +239,19 @@ def runner(cmd, workdir, userdir, username, root = 0):
                                                 theme.close()
                                             else:
                                                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[5]}'")
-                                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                                                 logger.flush()
                                     else:
                                         print("ACCESS_NOT_GRANTED_ERROR (0x00000061): вы не администратор")
-                                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000061\n")
+                                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000061\n")
                                         logger.flush()
                                 else:
                                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[4]}'")
-                                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                                     logger.flush()
                             else:
                                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[3]}'")
-                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                                 logger.flush()
                         elif cmd[2] == "users":
                             if cmd[3] == "add":
@@ -242,24 +262,24 @@ def runner(cmd, workdir, userdir, username, root = 0):
                                             try: os.mkdir(workdir)
                                             except FileExistsError:
                                                 print(f"FILE_EXISTS_ERROR (0x00000011): пользователь '{cmd[4]}' уже существует")
-                                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000011\n")
+                                                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000011\n")
                                                 logger.flush()
                                             code, error, _ = registr(cmd[4], cmd[5], workdir, "40", "37", int(cmd[6]))
                                             if code:
                                                 print(f"BUILTIN_ERROR: {error}")
-                                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' (BUILTIN_ERROR: '{error}')\n")
+                                                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' (BUILTIN_ERROR: '{error}')\n")
                                                 logger.flush()
                                         else:
                                             print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[6]}'")
-                                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                            logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                                             logger.flush()
                                     else:
                                         print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
-                                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000023\n")
                                         logger.flush()
                                 else:
                                     print("ACCESS_NOT_GRANTED_ERROR (0x00000061): вы не администратор")
-                                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000061\n")
+                                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000061\n")
                                     logger.flush()
                             elif cmd[3] == "view":
                                 if len(cmd) > 4:
@@ -268,57 +288,57 @@ def runner(cmd, workdir, userdir, username, root = 0):
                                         for name, values in data.items():
                                             if values[6] == 1:
                                                 print(f"Пользователь {name}\n  - ID: {values[0]}\n  - Администратор: да\n  - Рабочая директория: {values[3]}\n")
-                                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                                         logger.flush()
                                     elif cmd[4] == "all":
                                         data = user_data_get()
                                         for name, values in data.items():
                                             print(f"Пользователь {name}\n  - ID: {values[0]}\n  - Администратор: {"да" if values[6] == 1 else "нет"}\n  - Рабочая директория: {values[3]}\n")
-                                        logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                                         logger.flush()
                                     else:
                                         print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[4]}'")
-                                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                                         logger.flush()
                             else:   
                                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[3]}'")
-                                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                                 logger.flush()
                         else:   
                             print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[2]}'")
-                            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                            logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                             logger.flush()
                     else:
                         print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
-                        logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000023\n")
                         logger.flush()
                 else:
                     print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                     logger.flush()
             else:
                 print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
 
         elif cmd[0] == "echo":
             for string in cmd[1:]: print(string, end = " ")
-            logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+            logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
             logger.flush()
 
         elif cmd[0] == "run":
             if len(cmd) == 1:
                 print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
             else:
                 try: script_user = open(os.path.join(os.getcwd(), "scripts", f"{cmd[1]}"))
                 except FileNotFoundError:
                     print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
-                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000051\n")
                     logger.flush()
                 except Exception as e:
-                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
                     logger.flush()
                     print(f"BUILTIN_ERROR: {e}")
                 else:
@@ -327,7 +347,7 @@ def runner(cmd, workdir, userdir, username, root = 0):
                     for cmd in commands: runner(cmd, workdir, userdir, username)
                     print()
                     script_user.close()
-                    logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                     logger.flush()
 
         elif cmd[0] == "view":
@@ -336,20 +356,20 @@ def runner(cmd, workdir, userdir, username, root = 0):
                     file_opened = open(os.path.join(workdir, cmd[1]), "r")
                 except FileNotFoundError:
                     print("FILE_NOT_FOUND_ERROR (0x00000051): файл не найден!")
-                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000051\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000051\n")
                     logger.flush()
                 except Exception as e:
-                    logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' BUILTIN_ERROR '{e}'\n")
                     logger.flush()
                     print(f"BUILTIN_ERROR: {e}")
                 else:
                     print(file_opened.read())
-                    logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                     logger.flush()
                     file_opened.close()
             else:
                 print("COMMAND_NEED_ARGUMENT_ERROR (0x00000023): недостаточно аргументов")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000023\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000023\n")
                 logger.flush()
 
         elif cmd[0].startswith("#"):
@@ -361,13 +381,13 @@ def runner(cmd, workdir, userdir, username, root = 0):
                 lines = fetch_file.readlines()
                 vers_file = open(os.path.join(os.getcwd(), "bin", "sys", "data", "version.txt"), "r")
                 print(f"{lines[0]}\n{lines[1]} Имя: RoltonVenv {vers_file.readlines()[0]} для {platform.system()}\n{lines[2]}\n{lines[3]} ОС: {platform.system()} {platform.release()}\n{lines[4]}\n{lines[5]} Версия: {vers_file.readlines()[0]}\n{lines[6]}\n{lines[7]} CPU: {platform.processor()}\n{lines[8]}\n{lines[9]} Пользователь: {username}\n{lines[10]}\n")
-                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
                 fetch_file.close()
                 vers_file.close()
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                 logger.flush()
 
         elif cmd[0] == "whoami":
@@ -376,15 +396,31 @@ def runner(cmd, workdir, userdir, username, root = 0):
                 for name, values in data.items():
                     if name == username:
                         print(f"Пользователь {name}\n  - ID: {values[0]}\n  - Администратор: {"да" if root else "нет"}\n  - Рабочая директория: {values[3]}\n")
-                logger.write(f"[{datetime.datetime.now()}] Succesful execute '{cmd[0]}'\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Succesful execute '{cmd[0]}'\n")
                 logger.flush()
             else:
                 print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
-                logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
                 logger.flush()
+
+        elif cmd[0] == "time":
+            if len(cmd) == 1:
+                print(f"Текущее время: {datetime.datetime.now()}")
+            elif len(cmd) == 2:
+                if cmd[1] == "work":
+                    print(f"Время работы: {datetime.datetime.now() - time_start}")
+                else:
+                    print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[1]}'")
+                    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
+                    logger.flush()
+            else:
+                print(f"COMMAND_ARGUMENT_ERROR (0x00000022): неизвестный аргумент функции '{cmd[2]}'")
+                logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000022\n")
+                logger.flush()
+
         else:
             print(f"COMMAND_UWNKOWN_ERROR (0x00000021): неизвестная команда '{cmd[0]}'. Для запуска модуля используйте 'module-run', для запуска утилиты 'util-run'")
-            logger.write(f"[{datetime.datetime.now()}] Failed execute '{cmd[0]}' code 0x00000021\n")
+            logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Command Executor] Failed execute '{cmd[0]}' code 0x00000021\n")
             logger.flush()
     else:
         return

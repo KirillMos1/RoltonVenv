@@ -21,13 +21,13 @@ def loginning(users: dict):
         os.system("cls" if os.name == "nt" else "clear")
         registrate(0)
         return
-    logger.write(f"[{datetime.datetime.now()}] Loginning\n")
+    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] Loginning\n")
     logger.flush()
     try: id_user, _, passwd, workdir, color_fg, color_bg, root = users[name]
     except KeyError:
         print("USER_NOT_EXISTS_ERROR (0x00000012): Пользователь не существует!")
         input("Нажмите ENTER для выхода...")
-        logger.write(f"[{datetime.datetime.now()}] RoltonVenv crashed with code 0x00000012\n")
+        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] RoltonVenv crashed with code 0x00000012\n")
         logger.flush()
         logger.close()
         exit(0x00000012)
@@ -36,7 +36,7 @@ def loginning(users: dict):
     except Exception as e:
         print("FILE_SYSTEM_CORRUPTED_ERROR (0x00000013): Файловая система повреждена! Переустановите RoltonVenv")
         print(f"BUILTIN_ERROR: {e}")
-        logger.write(f"[{datetime.datetime.now()}] RoltonVenv crashed with code 0x00000013 (BUILTIN_ERROR '{e}')\n")
+        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] RoltonVenv crashed with code 0x00000013 (BUILTIN_ERROR '{e}')\n")
         logger.flush()
         logger.close()
         input("Нажмите ENTER для выхода...")
@@ -54,7 +54,7 @@ def loginning(users: dict):
         user_root = 1 if root else 0
 
 def registrate(root):
-    logger.write(f"[{datetime.datetime.now()}] Registration\n")
+    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] Registration\n")
     logger.flush()
     global work_directory, user_home, user_name, user_passwd, user_id, user_color_fg, user_color_bg, user_root
     print(f"Создание аккаунта Rolton Venv {"(аккаунт будет создан с правами администратора)" if root else ""}")
@@ -94,7 +94,7 @@ def registrate(root):
     except FileExistsError:
         print("USER_ALREADY_EXISTS_ERROR (0x00000011): Такой пользователь уже существует!")
         input("Нажмите ENTER для выхода...")
-        logger.write(f"[{datetime.datetime.now()}] RoltonVenv crashed with code 0x00000011\n")
+        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] RoltonVenv crashed with code 0x00000011\n")
         logger.flush()
         logger.close()
         exit(0x00000011)
@@ -111,7 +111,7 @@ def registrate(root):
         user_root = 1 if root else 0
     else:
         print(f"Произошла ошибка при регистрации\nBUILTIN_ERROR: {error}")
-        logger.write(f"[{datetime.datetime.now()}] RoltonVenv crashed with code 0x00000014 (BUILTIN_ERROR '{error}')\n")
+        logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] RoltonVenv crashed with code 0x00000014 (BUILTIN_ERROR '{error}')\n")
         logger.flush()
         input("Нажмите ENTER для выхода...")
         logger.close()
@@ -124,11 +124,11 @@ def run():
     while command != "exit":
         command = input(f"{work_directory[len(os.getcwd()):]}>> ")
         bin.sys.cmd.runner(command, work_directory, user_home, user_name, user_root)
-    logger.write(f"[{datetime.datetime.now()}] RoltonVenv exit\n")
+    logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] RoltonVenv exit\n")
     logger.flush()
     logger.close()
 
-logger.write(f"[{datetime.datetime.now()}] Init functions succsesful\n")
+logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] Init functions succsesful\n")
 logger.flush()
 theme = open(os.path.join(os.getcwd(), "bin", "sys", "data", "selected-logo.txt"), "r")
 theme_selected = open(os.path.join(os.getcwd(), "bin", "sys", "data", "logo", f"{(theme.readline())[:-1]}.txt"), "r")
@@ -141,6 +141,6 @@ if users == 0:
 else:
     loginning(users)
 
-logger.write(f"[{datetime.datetime.now()}] Run shell\n")
+logger.write(f"[{datetime.datetime.now()}] [RoltonVenv Start Point] Run shell\n")
 logger.flush()
 run()
