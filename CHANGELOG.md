@@ -1,3 +1,9 @@
+commit 0cfacc997b9c0f686800dfadc5eb36719eb8a171
+Author: Alexeev Bronislav <alexeev.dev@mail.ru>
+Date:   Sat Jul 5 11:38:21 2025 +0700
+
+    refactor code and add uv as project manager
+
 commit 0757ae958b927776fc29162a6ce9a35adb73e920
 Author: Kirill Kasparyants <kirillkasparyants@yandex.com>
 Date:   Thu Jun 19 08:24:03 2025 +0300

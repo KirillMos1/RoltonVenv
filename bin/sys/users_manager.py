@@ -3,6 +3,7 @@ import sqlite3
 
 db = sqlite3.connect(os.path.join(os.getcwd(), "bin", "sys", "data", "users.db"))
 cursor = db.cursor()
+#! whats about sql injections?
 
 
 def registr(name, passwd, workdir, color_fg, color_bg, root):

@@ -12,6 +12,8 @@ def calculate(expr):
         ast.USub,
     )
 
+    # todo: Class in function?
+    # ! using abstract tree for calculator is so strange and over-enginereed
     class SafetyVisitor(ast.NodeVisitor):
         def visit_BinOp(self, node):
             if not isinstance(node.op, allowed_operators):
