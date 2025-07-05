@@ -1,8 +1,10 @@
 import os
-import requests
-import zipfile
 import shutil
 import sys
+import zipfile
+
+import requests
+
 
 def download_and_extract_zip(url, temp_dir):
     os.makedirs(temp_dir, exist_ok=True)
@@ -12,18 +14,19 @@ def download_and_extract_zip(url, temp_dir):
         response = requests.get(url)
         if response.status_code != 200:
             raise Exception(f"Ошибка при скачивании: HTTP {response.status_code}")
-        with open(zip_filename, 'wb') as f:
+        with open(zip_filename, "wb") as f:
             f.write(response.content)
         print("ZIP-архив успешно скачан.")
         print("Распаковка ZIP-архива...")
-        with zipfile.ZipFile(zip_filename, 'r') as zip_ref:
+        with zipfile.ZipFile(zip_filename, "r") as zip_ref:
             zip_ref.extractall(temp_dir)
         print("ZIP-архив успешно распакован.")
         return temp_dir
-    
+
     except Exception as e:
         print(f"Произошла ошибка: {e}")
         return None
+
 
 def find_module_folder(base_dir, module_name):
     for root, dirs, _ in os.walk(base_dir):
@@ -31,6 +34,7 @@ def find_module_folder(base_dir, module_name):
             if dir_name == module_name:
                 return os.path.join(root, dir_name)
     return None
+
 
 def copy_files_to_module_folder(module_folder, target_module_dir):
     print(f"Копирование файлов в '{target_module_dir}'...")
@@ -43,10 +47,12 @@ def copy_files_to_module_folder(module_folder, target_module_dir):
             shutil.copy2(source_path, destination_path)
     print(f"Файлы успешно скопированы в '{target_module_dir}'.")
 
+
 def main():
     url = "https://github.com/KirillMos1/RoltonVenv-packages/archive/refs/heads/master.zip"
     temp_dir = "temp_download"
-    print(r"""
+    print(
+        r"""
 $$$$$$$\            $$\   $$\                        $$\    $$\                                      $$$$$$\             $$\     
 $$  __$$\           $$ |  $$ |                       $$ |   $$ |                                    $$  __$$\            $$ |    
 $$ |  $$ | $$$$$$\  $$ |$$$$$$\    $$$$$$\  $$$$$$$\ $$ |   $$ | $$$$$$\  $$$$$$$\ $$\    $$\       $$ /  \__| $$$$$$\ $$$$$$\   
@@ -56,7 +62,8 @@ $$ |  $$ |$$ |  $$ |$$ |  $$ |$$\ $$ |  $$ |$$ |  $$ | \$$$  /  $$   ____|$$ |  
 $$ |  $$ |\$$$$$$  |$$ |  \$$$$  |\$$$$$$  |$$ |  $$ |  \$  /   \$$$$$$$\ $$ |  $$ |  \$  /         \$$$$$$  |\$$$$$$$\  \$$$$  |
 \__|  \__| \______/ \__|   \____/  \______/ \__|  \__|   \_/     \_______|\__|  \__|   \_/           \______/  \_______|  \____/ 
                                                                                                                                  
-""")
+"""
+    )
     module_name = input("Введите имя модуля: ").strip()
     extracted_dir = download_and_extract_zip(url, temp_dir)
     if not extracted_dir:
@@ -73,6 +80,7 @@ $$ |  $$ |\$$$$$$  |$$ |  \$$$$  |\$$$$$$  |$$ |  $$ |  \$  /   \$$$$$$$\ $$ |  
             print(f"Папка с модулем '{module_name}' не найдена.")
     finally:
         input("Нажмите любую клавишу клавиатуры для выхода...")
+
 
 if __name__ == "__main__":
     main()

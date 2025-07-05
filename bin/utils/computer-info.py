@@ -1,6 +1,9 @@
-import os, platform, sys, psutil
+import platform
 
-print("Computer info (утилита для RoltonVenv)\nЗащищено лицензией \"Apache License version 2.0\"\n")
+
+print(
+    'Computer info (утилита для RoltonVenv)\nЗащищено лицензией "Apache License version 2.0"\n'
+)
 
 print("Загрузка...")
 #     ^^^^^^^^^^^^^ возможно не затрется эта запись
